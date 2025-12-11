@@ -1,6 +1,6 @@
-from APIgroq import Agent
+from tutor_agent import Agent
 from APIgemini import Gemini
-from LevelConfig import LEVEL_CONFIG
+from config import LEVEL_CONFIG
 
 
 GroqAgent = Agent()

@@ -1,6 +1,6 @@
 import requests
-from APIgroq import Agent
-from Prompt import content
+from tutor_agent import Agent
+from context import content
 
 
 GroqAgent = Agent()
