@@ -11,27 +11,39 @@ class Agent():
     def ask(self,message):
         chat_completion = self.groqclient.chat.completions.create(
         messages=[
-            # Set an optional system message. This sets the behavior of the
-            # assistant and can be used to provide specific instructions for
-            # how it should behave throughout the conversation.
             {
                 "role": "system",
-                "content": "You are a helpful assistant."
+                "content": """
+                            Tu es un assistant spécialisé dans la vulgarisation d’articles scientifiques arXiv.
+
+                            Ton objectif est de produire un résumé structuré en 4 sections :
+
+                            1. Problème abordé  
+                            2. Méthode  
+                            3. Résultats  
+                            4. Intérêt / limites  
+
+                            Règles strictes :
+
+                            - Tu ne dois utiliser *que* les informations réellement présentes dans l’article.  
+                            - Si une section ne peut pas être remplie (information absente), écris :
+                            « Informations non disponibles dans l’article. »
+                            - Aucune spéculation, aucune hallucination, aucun ajout externe.
+                            - Le résumé doit être cohérent, fidèle et factuel.
+                            - Le niveau d’explication dépendra des instructions supplémentaires fournies dans la section "NIVEAU D’EXPLICATION".
+
+                            NIVEAU D’EXPLICATION :
+                            {info_niveau}
+                            """
             },
-            # Set a user message for the assistant to respond to.
             {
                 "role": "user",
                 "content": message,
             }
         ],
 
-            # The language model which will generate the completion.
             model="llama-3.3-70b-versatile"
         )
 
-        # Print the completion returned by the LLM.
         return chat_completion.choices[0].message.content
-
-
-
 

@@ -10,6 +10,7 @@ FichierAudio = st.empty()
 
 st.title("Agent Tuteur")
 
+message = ""
 message = st.text_input("Entrez votre message")
 
 reponse = GroqAgent.ask(message)
