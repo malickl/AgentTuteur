@@ -2,33 +2,9 @@ from groq import Groq
 from dotenv import load_dotenv
 import os
 from LevelConfig import LEVEL_CONFIG
+import requests
 
 load_dotenv(dotenv_path=".env")
-
-content = """
-Tu es un assistant spécialisé dans la vulgarisation d’articles scientifiques arXiv.
-
-Ton rôle est de produire un résumé structuré en 4 sections :
-
-1. Problème abordé  
-2. Méthode  
-3. Résultats  
-4. Intérêt / limites  
-
-Règles fondamentales :
-
-- Tu ne dois utiliser *que* les informations réellement présentes dans l’article.
-- Si une section ne peut pas être remplie, écris exactement :
-« Informations non disponibles dans l’article. »
-- Aucune spéculation, aucune hallucination, aucun ajout externe.
-- Le résumé doit être cohérent, factuel et fidèle au contenu.
-- Ton style d’écriture doit strictement respecter les instructions du niveau choisit.
-
-{info_niveau}
-
-Répond toujours en français.
-            """
-
 
 
 
@@ -48,6 +24,34 @@ class Agent():
         TexteNiveau = self.InfoNiveau(LEVEL_CONFIG[niveau])
         prompt = prompt.replace("{info_niveau}", TexteNiveau)
         return prompt
+    
+    def RecupPdf(self,url):
+        URL = url
+        response = requests.get(URL)
+        open("article.pdf", "wb").write(response.content)
+
+
+    def PdfToText(self,pdf):
+        import fitz
+
+        # Open a PDF file
+        pdf_document = pdf
+        doc = fitz.open(pdf_document)
+
+        # Initialize an empty string to store extracted text
+        extracted_text = ""
+
+        # Iterate through each page and extract text
+        for page_num in range(doc.page_count):
+            page = doc[page_num]
+            extracted_text += page.get_text()
+            
+        # Close the PDF document
+        doc.close()
+
+        return extracted_text
+    
+
 
 
     def ask(self,message,FinalPrompt):
