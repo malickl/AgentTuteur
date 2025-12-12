@@ -35,7 +35,7 @@ class Gemini():
 
       data = response.candidates[0].content.parts[0].inline_data.data
 
-      file_name='résumé.wav'
+      file_name='resume.wav'
       self.wave_file(file_name, data)     
 
 
