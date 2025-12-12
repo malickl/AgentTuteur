@@ -1,6 +1,6 @@
 import streamlit as st
 from tutor_agent import TutorAgent
-from APIgemini import Gemini
+from audio_agent import GeminiAudioAgent
 
 # Configuration générale de la page
 st.set_page_config(
@@ -14,7 +14,7 @@ if "tutor_agent" not in st.session_state:
     st.session_state.tutor_agent = TutorAgent()
 
 if "gemini_agent" not in st.session_state:
-    st.session_state.gemini_agent = Gemini()
+    st.session_state.gemini_agent = GeminiAudioAgent()
 
 if "audio_resume" not in st.session_state:
     st.session_state.audio_resume = None
@@ -66,7 +66,7 @@ def main():
             resume = st.session_state.tutor_agent.get_last_assistant_message()
             if resume:
                 # Ton agent Gemini doit retourner des bytes ou un path
-                st.session_state.audio_resume = st.session_state.gemini_agent.audio(resume)
+                st.session_state.audio_resume = st.session_state.gemini_agent.generate_audio(resume)
             else:
                 st.warning("Aucun résumé trouvé. Génère d'abord un résumé avec l'agent tuteur.")
 

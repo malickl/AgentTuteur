@@ -5,6 +5,7 @@ from config import CONTEXT, PROMPT, LEVEL_CONFIG
 import requests
 import fitz
 from fpdf import FPDF
+import xml.etree.ElementTree as ET
 
 class TutorAgent:
     def __init__(self):
@@ -113,3 +114,6 @@ class TutorAgent:
       pdf.output(filepath)
 
       return filepath
+
+    def search_similar_articles(self, keywords, max_results=5):
+        pass
