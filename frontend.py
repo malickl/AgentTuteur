@@ -16,6 +16,9 @@ if "tutor_agent" not in st.session_state:
 if "gemini_agent" not in st.session_state:
     st.session_state.gemini_agent = Gemini()
 
+if "audio_resume" not in st.session_state:
+    st.session_state.audio_resume = None
+
 def show_discussion_history(history_placeholder):
     """Affiche l'historique de discussion (sans les messages système)."""
     container = history_placeholder.container()
@@ -59,10 +62,6 @@ def main():
 
         st.markdown("### 🎙️ Obtenir le résumé en audio")
 
-        # Initialiser une variable en session pour stocker l'audio
-        if "audio_resume" not in st.session_state:
-            st.session_state.audio_resume = None
-
         if st.button("🎧 Générer l'audio du résumé"):
             resume = st.session_state.tutor_agent.get_last_assistant_message()
             if resume:
@@ -71,9 +70,8 @@ def main():
             else:
                 st.warning("Aucun résumé trouvé. Génère d'abord un résumé avec l'agent tuteur.")
 
-        # Afficher le lecteur audio si on a déjà généré quelque chose
-        if st.session_state.audio_resume:
-            st.audio(st.session_state.audio_resume, format="audio/wav")
+        if st.session_state.audio_resume is not None:
+            st.sidebar.audio(st.session_state.audio_resume, format="audio/wav")
 
     # --- PARTIE DROITE : CONTENU PRINCIPAL ---
 
@@ -87,8 +85,6 @@ def main():
 
     # 1) Si on clique sur "Générer" et qu'on a tout ce qu'il faut
     if lancer and level and arxiv_url:
-        # On garde ta logique : si tu veux éviter de réempiler l'historique,
-        # tu peux vider ici, sinon on laisse tel quel.
         if not st.session_state.tutor_agent.history:
             st.session_state.tutor_agent.explain(level, arxiv_url)
         else:
@@ -102,7 +98,6 @@ def main():
     elif st.session_state.tutor_agent.history:
         show_discussion_history(history_placeholder)
 
-    # Zone de chat pour poser des questions (en dessous de l'historique)
     if st.session_state.tutor_agent.history:
         user_input = st.chat_input("Pose une question à l'agent sur l'article...")
         if user_input:

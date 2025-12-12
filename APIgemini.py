@@ -17,25 +17,31 @@ class Gemini():
          wf.setframerate(rate)
          wf.writeframes(pcm)
 
-   def audio(self,MessageToAudio):
+   def audio(self, MessageToAudio):
       response = self.geminiclient.models.generate_content(
          model="gemini-2.5-flash-preview-tts",
          contents=MessageToAudio,
          config=types.GenerateContentConfig(
-            response_modalities=["AUDIO"],
-            speech_config=types.SpeechConfig(
-               voice_config=types.VoiceConfig(
-                  prebuilt_voice_config=types.PrebuiltVoiceConfig(
-                     voice_name='Kore',
+               response_modalities=["AUDIO"],
+               speech_config=types.SpeechConfig(
+                  voice_config=types.VoiceConfig(
+                     prebuilt_voice_config=types.PrebuiltVoiceConfig(
+                           voice_name='Kore',
+                     )
                   )
-               )
-            ),
+               ),
          )
       )
 
       data = response.candidates[0].content.parts[0].inline_data.data
 
-      file_name='resume.wav'
-      self.wave_file(file_name, data)     
+      file_name = "resume.wav"
+      self.wave_file(file_name, data)
+
+      # 🔥 lire le vrai wav pour Streamlit
+      with open(file_name, "rb") as f:
+         wav_bytes = f.read()
+
+      return wav_bytes
 
 
